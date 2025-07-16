@@ -7,6 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* --- Customizable Brand Colors --- */
+        :root {
+            --color-primary: #2f5854; /* Dark Green */
+            --color-accent: #8fba40;  /* Lime Green */
+            --color-accent-text: #1f2937; /* Dark text for light accent background */
+        }
+        /* --- End Customizable Colors --- */
+
         body {
             font-family: 'Inter', sans-serif;
         }
@@ -14,7 +22,6 @@
             font-size: 6rem; /* 96px */
             line-height: 1;
         }
-        /* Simple transition for button hover states */
         .btn {
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, filter 0.2s;
         }
@@ -24,6 +31,11 @@
         .btn:active {
             transform: scale(0.98);
         }
+        /* Custom classes using the variables */
+        .bg-primary { background-color: var(--color-primary); }
+        .bg-accent { background-color: var(--color-accent); }
+        .text-accent { color: var(--color-accent-text); }
+
         /* Hide number input arrows */
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
@@ -37,13 +49,13 @@
 </head>
 <body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
 
-    <div class="bg-[#2f5854] p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
+    <div class="bg-primary p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
         <!-- Logo -->
-        <img src="/static/Laeder-Consulting-Logo-Horizontal_Reverse.png" alt="Laeder Consulting Logo" class="h-12 mx-auto mb-6"
+        <img src="logo.png" alt="Company Logo" class="h-12 mx-auto mb-6"
              onerror="this.onerror=null; this.style.display='none'; document.getElementById('fallback-title').style.display='block';">
         
         <!-- Fallback Title -->
-        <h1 id="fallback-title" class="text-4xl font-bold mb-6" style="display:none;">Laeder Consulting Pomodoro</h1>
+        <h1 id="fallback-title" class="text-4xl font-bold mb-6" style="display:none;">Branded Pomodoro</h1>
         
         <p class="text-gray-300 mb-6">Stay focused and productive.</p>
 
@@ -54,14 +66,14 @@
 
         <!-- Controls -->
         <div class="flex justify-center space-x-4 mb-6">
-            <button id="start" class="btn bg-[#8fba40] text-gray-900 font-bold py-3 px-8 rounded-lg text-lg">Start</button>
+            <button id="start" class="btn bg-accent text-accent font-bold py-3 px-8 rounded-lg text-lg">Start</button>
             <button id="pause" class="btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-lg text-lg hidden">Pause</button>
             <button id="reset" class="btn bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg text-lg">Reset</button>
         </div>
 
         <!-- Session Type Selector -->
         <div class="flex justify-center space-x-2 mb-4">
-            <button id="pomodoro-btn" class="btn bg-[#8fba40] text-gray-900 py-2 px-4 rounded-md">Pomodoro (25m)</button>
+            <button id="pomodoro-btn" class="btn bg-accent text-accent py-2 px-4 rounded-md">Pomodoro (25m)</button>
             <button id="short-break-btn" class="btn bg-gray-700 text-white py-2 px-4 rounded-md">Short Break (5m)</button>
             <button id="long-break-btn" class="btn bg-gray-700 text-white py-2 px-4 rounded-md">Long Break (15m)</button>
             <button id="custom-btn" class="btn bg-gray-700 text-white py-2 px-4 rounded-md">Custom</button>
@@ -70,7 +82,7 @@
         <!-- Custom Time Input -->
         <div id="custom-time-wrapper" class="hidden mt-4 flex justify-center items-center space-x-2">
             <input type="number" id="custom-minutes" class="bg-gray-800 border border-gray-600 text-white text-center rounded-md p-2 w-24" placeholder="Mins">
-            <button id="set-custom-time-btn" class="btn bg-[#8fba40] text-gray-900 font-semibold py-2 px-4 rounded-md">Set</button>
+            <button id="set-custom-time-btn" class="btn bg-accent text-accent font-semibold py-2 px-4 rounded-md">Set</button>
         </div>
     </div>
 
@@ -150,22 +162,21 @@
         function switchMode(mode) {
             currentMode = mode;
             
-            // Show or hide the custom time input field
             if (mode === 'custom') {
                 customTimeWrapper.classList.remove('hidden');
             } else {
                 customTimeWrapper.classList.add('hidden');
             }
 
-            // Update button styles
+            // Update button styles using our custom CSS classes
             [pomodoroBtn, shortBreakBtn, longBreakBtn, customBtn].forEach(btn => {
-                btn.classList.remove('bg-[#8fba40]', 'text-gray-900');
+                btn.classList.remove('bg-accent', 'text-accent');
                 btn.classList.add('bg-gray-700', 'text-white');
             });
             
             const activeBtn = document.getElementById(`${mode}-btn`);
-            activeBtn.classList.add('bg-[#8fba40]', 'text-gray-900');
             activeBtn.classList.remove('bg-gray-700', 'text-white');
+            activeBtn.classList.add('bg-accent', 'text-accent');
 
             resetTimer();
         }
@@ -174,8 +185,8 @@
             const minutes = parseInt(customMinutesInput.value, 10);
             if (minutes && minutes > 0) {
                 modes['custom'] = minutes * 60;
-                currentMode = 'custom'; // Ensure we are in custom mode
-                resetTimer(); // Reset the timer with the new custom value
+                currentMode = 'custom';
+                resetTimer();
             }
         }
 
@@ -189,7 +200,6 @@
         longBreakBtn.addEventListener('click', () => switchMode('long-break'));
         customBtn.addEventListener('click', () => switchMode('custom'));
         setCustomTimeBtn.addEventListener('click', setCustomTime);
-
 
         // --- Initial Setup ---
         switchMode('pomodoro');
